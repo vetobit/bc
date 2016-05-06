@@ -9,10 +9,8 @@ var obj={
     if(authorization){
       if(obj.user.type!="people"){
         obj.getUsers(true);
-        obj.getOutin(true);
         obj.getNeeds(true);
-        obj.uplodScreen(obj.user.type);
-        window.location.hash=obj.user.type;
+        obj.getOutin(true);
       }else{
         console.log("Прошёл через турникет");   
       }
@@ -21,17 +19,33 @@ var obj={
       console.log("не авторизован");
     }
   },
-  uplodScreen:function(hash){
+  uploadScreen:function(hash){
     var screen = document.querySelector("#"+hash),
         dom = screen.querySelectorAll("[data-request]"),
         request = [];
-
     for(var item in dom){
       item=dom[item];
       if(typeof(item)=="object"){
-        request.push(item.getAttribute("data-request"));
+        if(item.tagName=="TABLE"){
+          var ths=item.querySelectorAll("th"),
+              item=item.querySelector("tbody"),
+              thsRequest=[];
+          for(var th in ths){
+            var thItem=ths[th];
+            if(typeof(thItem)=="object"){
+              thsRequest.push(obj.whatdo(thItem.getAttribute("data-request")));
+            }
+          }
+          console.log(thsRequest);
+        }
+        request.push(obj.whatdo(item.getAttribute("data-request")));
       }
     }
+  },
+  whatdo:function(request){
+    var request=JSON.parse(request);
+    request.parent=eval(request.parent);
+    return request;
   },
   authorization:function(responseText){                                            
     if(responseText!=false){                                                          
@@ -79,7 +93,10 @@ var obj={
   getUsers:function(responseText){                                                    
     if(responseText!=true){                                                          
       if(responseText!=false){
-        obj.users=JSON.parse(responseText);                                              
+        obj.users=JSON.parse(responseText);
+        obj.checkFiles();                                             
+      }else{
+        obj.checkFiles();
       }
     }                                                                                 
     else{                                                                            
@@ -91,7 +108,10 @@ var obj={
   getOutin:function(responseText){                                                    
     if(responseText!=true){                                                          
       if(responseText!=false){
-        obj.outin=JSON.parse(responseText);                                              
+        obj.outin=JSON.parse(responseText);
+        obj.checkFiles();                                              
+      }else{
+        obj.checkFiles();
       }
     }                                                                                 
     else{                                                                            
@@ -103,13 +123,27 @@ var obj={
   getNeeds:function(responseText){                                                    
     if(responseText!=true){                                                          
       if(responseText!=false){
-        obj.needs=JSON.parse(responseText);                                              
+        obj.needs=JSON.parse(responseText); 
+        obj.checkFiles();                                             
+      }else{
+        obj.checkFiles();
       }
     }                                                                                 
     else{                                                                            
-      obj.getFile("json/needs.json",function(string){                              
+      obj.getFile("json/need.json",function(string){                              
         obj.getNeeds(string);                                                          
       });
+    }
+  },
+  checkFiles:function(){
+    if(obj.run){
+      obj.run++;
+      if(obj.run==3){
+        obj.uploadScreen(obj.user.type);
+        window.location.hash=obj.user.type;
+      }
+    }else{
+      obj.run=1;
     }
   }
 };
