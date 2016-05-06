@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Дипломный проект. Привалов Виталий.</title>
+	<link rel="stylesheet" href="css/style.css">
+	<script src="js/main.js"></script>
+</head>
+<body>
+	<div id="login" class="screen">
+		<div class="container">
+			<div id="check">
+				<select class="select" id="сhooseUser">
+					
+				</select>
+			</div>
+			<div id="authentication">
+				<h2 class="header login">Вход</h2>
+				<div class="form">
+					<label for="login">Введите логин</label>
+					<input type="text" class="input" id="login" placeholder="Логин">
+					<label for="password">Введите пароль</label>
+					<input type="password" class="input" id="password" placeholder="Пароль">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="admin" class="screen">
+		<div class="container">
+			<h2 class="description">Админ панель</h2>
+			<h3 class="description">Запросы</h3>
+			<table class="table requests" data-request="{type:'get',parent:'obj.needs',param:'all',obj:'length'}" data-popup="#adminRequest">
+				<thead>
+					<th data-request="{type:'get',parent:'obj.needs',param:['company'],obj:'all'}">Компания</th>
+					<th data-request="{type:'get',parent:'obj.needs',param:['number'],obj:'all'}">Номер запроса</th>
+					<th data-request="{type:'get',parent:'obj.needs',param:['type'],obj:'all'}">Тип запроса</th>
+					<th data-request="{type:'get',parent:'obj.needs',param:['text'],obj:'all'}">Краткое описание</th>
+					<th data-request="{type:'get',parent:'obj.needs',param:['user'],obj:'all'}" data-alternative="Не определён">Специалист</th>
+					<th data-request="{type:'get',parent:'obj.needs',param:['status'],obj:'all'}">Статус запроса</th>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+			<h3 class="description">Пользователи</h3>
+			<table class="table users" data-request="{type:'get',parent:'obj.users',param:'all',obj:'length'}" data-popup="#adminUser">
+				<thead>
+					<th data-request="{type:'get',parent:'obj.users',param:['name'],obj:'all'}">Имя</th>
+					<th data-request="{type:'get',parent:'obj.users',param:['login'],obj:'all'}">Логин</th>
+					<th data-request="{type:'get',parent:'obj.users',param:['password'],obj:'all'}">Пароль</th>
+					<th data-request="{type:'get',parent:'obj.users',param:['company'],obj:'all'}">Компания</th>
+					<th data-request="{type:'get',parent:'obj.users',param:['type'],obj:'all'}">Привелегии</th>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+			<h3 class="description">Турникет</h3>
+			<table class="table doings">
+				<thead>
+					<th data-request="{type:'get',parent:'obj.outin',param:['user'],obj:'all'}">Имя</th>
+					<th data-request="{type:'get',parent:'obj.outin',param:['company'],obj:'all'}">Компания</th>
+					<th data-request="{type:'get',parent:'obj.outin',param:['date'],obj:'all'}">Дата и время</th>
+					<th data-request="{type:'get',parent:'obj.outin',param:['doing'],obj:'all'}">Действие</th>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="company">
+		<div class="container">
+			<h2 class="description" data-request="{type:'get',parent:'obj',param:['name'],obj:'user'}">Компания</h2>
+			<div id="newRequest" data-info="status" data-value="Не подтверждён">
+				<h3 class="description">Запрос</h3>
+				<textarea class="text" placeholder="Опишите проблему" data-info="text"></textarea>
+				<h3 class="description">Тип запроса</h3>
+				<select class="select" data-info="type"></select>
+				<input type="button" class="button" value="Отправить" onclick="obj.whatdo({type:'add',parent:'obj.needs',param:['text','type','company','status'],link:[this.parentNode,'obj.user']})">
+			</div>
+			<h2 class="description">Запросы</h2>
+			<table class="table requests">
+				<thead>
+					<th data-request="{type:'get',parent:'obj.needs',param:['company'],obj:'all'}">Компания</th>
+					<th data-request="{type:'get',parent:'obj.needs',param:['number'],obj:'all'}">Номер запроса</th>
+					<th data-request="{type:'get',parent:'obj.needs',param:['type'],obj:'all'}">Тип запроса</th>
+					<th data-request="{type:'get',parent:'obj.needs',param:['text'],obj:'all'}">Краткое описание</th>
+					<th data-request="{type:'get',parent:'obj.needs',param:['user'],obj:'all'}" data-alternative="Не определён">Специалист</th>
+					<th data-request="{type:'get',parent:'obj.needs',param:['status'],obj:'all'}">Статус запроса</th>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="popup" id="adminRequest">
+		<div class="container" data-info="status" data-value="Подтверждён">
+			<h3 class="description" data-request="{type:'get',parent:'obj',param:['number'],obj:'popup'}" data-info="number">Номер запроса</h3>
+			<p class="text" data-request="{type:'get',parent:'obj',param:['text'],obj:'popup'}">Текст запроса</p>
+			<select class="select" data-request="{type:'get',parent:'obj.users',param:['name'],obj:'bc'}" data-info="user"></select>
+			<input type="button" class="button" value="Отправить" onclick="obj.whatdo({type:'rewrite',parent:'obj.needs',param:['status','user'],obj:'link:number',link:[this.parentNode]});">
+		</div>
+	</div>
+	<div class="popup" id="adminUser">
+		<div class="container">
+			<h3 class="description" data-request="{type:'get',parent:'obj',param:['number'],obj:'popup'}" data-info="number" data-alternative="obj.users.length">Номер пользователя</h3>
+			<input type="text" class="input" data-request="{type:'get',parent:'obj',param:['name'],obj:'popup'}" data-info="name">
+			<input type="text" class="input" data-request="{type:'get',parent:'obj',param:['login'],obj:'popup'}" data-info="login">
+			<input type="text" class="input" data-request="{type:'get',parent:'obj',param:['password'],obj:'popup'}" data-info="password">
+			<input type="text" class="input" data-request="{type:'get',parent:'obj',param:['company'],obj:'popup'}" data-info="company">
+			<input type="text" class="input" data-request="{type:'get',parent:'obj',param:['type'],obj:'popup'}" data-info="type">
+			<select class="select" data-info="do">
+				<option value="rewrite">Переписать</option>
+				<option value="add">Добавить</option>
+				<option value="delete">Удалить</option>
+			</select>
+			<input type="button" class="button" value="Применить" onclick="obj.whatdo({type:'link:do',parent:'obj.users',param:'all',obj:'link:number',link:[this.parentNode]});">
+		</div>
+	</div>
+</body>
+</html>
