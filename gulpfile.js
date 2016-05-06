@@ -7,7 +7,8 @@ var gulp = require('gulp'),
 	clean = require('gulp-clean'),
 	browserSync = require('browser-sync').create(),
 	path={
-		copy_dir:"./nwjs",
+		copy_dir:"./nwjs/**/*",
+		nw_config:"./src/nw-config/*",
 		server:"./build",
 		server_watch:[
 			"./build/**/*",
@@ -42,6 +43,10 @@ gulp.task('copy',function(){
 	return gulp.src(path.copy_dir)
 		.pipe(gulp.dest(path.server))
 });
+gulp.task('nwjs', function() {
+  return gulp.src(path.nw_config)
+    .pipe(gulp.dest('./build/'));
+});
 gulp.task('html', function() {
   return gulp.src(path.from.html)
     .pipe(htmlmin({collapseWhitespace: true}))
@@ -73,5 +78,5 @@ gulp.task('watch', function() {
 	gulp.watch(path.from.html, ['html']);
 });
 gulp.task('default',['clean'],function(){
-	gulp.run(['js','less','json','html','copy','serve','watch']);
+	gulp.run(['js','less','json','html','copy','nwjs','watch']);
 });
