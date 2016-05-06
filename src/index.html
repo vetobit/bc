@@ -18,9 +18,10 @@
 				<h2 class="header login">Вход</h2>
 				<div class="form">
 					<label for="login">Введите логин</label>
-					<input type="text" class="input" id="login" placeholder="Логин">
+					<input type="text" class="input" id="login" placeholder="Логин" oninput="obj.user.login=this.value">
 					<label for="password">Введите пароль</label>
-					<input type="password" class="input" id="password" placeholder="Пароль">
+					<input type="password" class="input" id="password" placeholder="Пароль" oninput="obj.user.password=this.value">
+					<input type="button" value="Войти" onclick="obj.authorization(false)">
 				</div>
 			</div>
 		</div>
