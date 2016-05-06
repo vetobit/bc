@@ -1,0 +1,30 @@
+{
+  "name": "bc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "scripts": {
+    "preinstall": "curl http://dl.nwjs.io/v0.14.3/nwjs-v0.14.3-win-ia32.zip > nwjs.zip && unzip nwjs.zip && mv nwjs-v0.14.3-win-ia32 nwjs && rm nwjs.zip",
+    "postinstall": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vetobit/bc.git"
+  },
+  "author": "vitaliy privalov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vetobit/bc/issues"
+  },
+  "homepage": "https://github.com/vetobit/bc#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "browser-sync": "^2.12.5",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-clean": "^0.3.2",
+    "gulp-htmlmin": "^2.0.0",
+    "gulp-jsonminify": "^1.0.0",
+    "gulp-less": "^3.0.5",
+    "gulp-uglify": "^1.5.3"
+  }
+}
