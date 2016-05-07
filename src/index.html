@@ -30,34 +30,34 @@
 		<div class="container">
 			<h2 class="description">Админ панель</h2>
 			<h3 class="description">Запросы</h3>
-			<table class="table requests" data-request='{"type":"get","parent":"obj.needs","param":"all","obj":"length"}' data-popup="#adminRequest">
+			<table class="table requests" data-request='{"type":"get","parent":"obj.needs","param":"all","obj":"length"}' data-mainObj="needs" data-popup="#adminRequest">
 				<thead>
-					<th data-request='{"type":"get","parent":"obj.needs","param":["company"],"obj":"all"}'>Компания</th>
-					<th data-request='{"type":"get","parent":"obj.needs","param":["number"],"obj":"all"}'>Номер запроса</th>
-					<th data-request='{"type":"get","parent":"obj.needs","param":["type"],"obj":"all"}'>Тип запроса</th>
-					<th data-request='{"type":"get","parent":"obj.needs","param":["text"],"obj":"all"}'>Краткое описание</th>
-					<th data-request='{"type":"get","parent":"obj.needs","param":["user"],"obj":"all"}' data-alternative="Не определён">Специалист</th>
-					<th data-request='{"type":"get","parent":"obj.needs","param":["status"],"obj":"all"}'>Статус запроса</th>
+					<th data-request='{"type":"get","parent":"obj.needs","param":["company"],"obj":"all"}' data-mainParam="company">Компания</th>
+					<th data-request='{"type":"get","parent":"obj.needs","param":["number"],"obj":"all"}' data-mainParam="number">Номер запроса</th>
+					<th data-request='{"type":"get","parent":"obj.needs","param":["type"],"obj":"all"}' data-mainParam="type">Тип запроса</th>
+					<th data-request='{"type":"get","parent":"obj.needs","param":["text"],"obj":"all"}' data-mainParam="text">Краткое описание</th>
+					<th data-request='{"type":"get","parent":"obj.needs","param":["user"],"obj":"all"}' data-alternative="Не определён" data-mainParam="user">Специалист</th>
+					<th data-request='{"type":"get","parent":"obj.needs","param":["status"],"obj":"all"}' data-mainParam="status">Статус запроса</th>
 				</thead>
 				<tbody>
 					
 				</tbody>
 			</table>
 			<h3 class="description">Пользователи</h3>
-			<table class="table users" data-request='{"type":"get","parent":"obj.users","param":"all","obj":"length"}' data-popup="#adminUser">
+			<table class="table users" data-request='{"type":"get","parent":"obj.users","param":"all","obj":"length"}' data-mainObj="users" data-popup="#adminUser">
 				<thead>
-					<th data-request='{"type":"get","parent":"obj.users","param":["name"],"obj":"all"}'>Имя</th>
-					<th data-request='{"type":"get","parent":"obj.users","param":["login"],"obj":"all"}'>Логин</th>
-					<th data-request='{"type":"get","parent":"obj.users","param":["password"],"obj":"all"}'>Пароль</th>
-					<th data-request='{"type":"get","parent":"obj.users","param":["company"],"obj":"all"}'>Компания</th>
-					<th data-request='{"type":"get","parent":"obj.users","param":["type"],"obj":"all"}'>Привелегии</th>
+					<th data-request='{"type":"get","parent":"obj.users","param":["name"],"obj":"all"}' data-mainParam="name">Имя</th>
+					<th data-request='{"type":"get","parent":"obj.users","param":["login"],"obj":"all"}' data-mainParam="login">Логин</th>
+					<th data-request='{"type":"get","parent":"obj.users","param":["password"],"obj":"all"}' data-mainParam="company">Пароль</th>
+					<th data-request='{"type":"get","parent":"obj.users","param":["company"],"obj":"all"}' data-mainParam="company">Компания</th>
+					<th data-request='{"type":"get","parent":"obj.users","param":["type"],"obj":"all"}' data-mainParam="company">Привелегии</th>
 				</thead>
 				<tbody>
 					
 				</tbody>
 			</table>
 			<h3 class="description">Турникет</h3>
-			<table class="table doings">
+			<table class="table doings" data-request="null" data-mainObj="outin">
 				<thead>
 					<th data-request='{"type":"get","parent":"obj.outin","param":["user"],"obj":"all"}'>Имя</th>
 					<th data-request='{"type":"get","parent":"obj.outin","param":["company"],"obj":"all"}'>Компания</th>
@@ -77,11 +77,14 @@
 				<h3 class="description">Запрос</h3>
 				<textarea class="text" placeholder="Опишите проблему" data-info="text"></textarea>
 				<h3 class="description">Тип запроса</h3>
-				<select class="select" data-info="type"></select>
+				<select class="select" data-info="type">
+					<option value="Ремонт">Ремонт</option>
+					<option value="Уборка">Уборка</option>
+				</select>
 				<input type="button" class="button" value="Отправить" onclick='obj.whatdo({"type":"add","parent":"obj.needs","param":["text","type","company","status"],link:[this.parentNode,"obj.user"]})'>
 			</div>
 			<h2 class="description">Запросы</h2>
-			<table class="table requests">
+			<table class="table requests" data-request="null" data-mainObj="needs">
 				<thead>
 					<th data-request='{"type":"get","parent":"obj.needs","param":["company"],"obj":"all"}'>Компания</th>
 					<th data-request='{"type":"get","parent":"obj.needs","param":["number"],"obj":"all"}'>Номер запроса</th>
@@ -107,11 +110,11 @@
 	<div class="popup" id="adminUser">
 		<div class="container">
 			<h3 class="description" data-request='{type:"get",parent:"obj",param:["number"],obj:"popup"}' data-info="number" data-alternative="obj.users.length">Номер пользователя</h3>
-			<input type="text" class="input" data-request='{type:"get",parent:"obj",param:["name"],obj:"popup"}' data-info="name">
-			<input type="text" class="input" data-request='{type:"get",parent:"obj",param:["login"],obj:"popup"}' data-info="login">
-			<input type="text" class="input" data-request='{type:"get",parent:"obj",param:["password"],obj:"popup"}' data-info="password">
-			<input type="text" class="input" data-request='{type:"get",parent:"obj",param:["company"],obj:"popup"}' data-info="company">
-			<input type="text" class="input" data-request='{type:"get",parent:"obj",param:["type"],obj:"popup"}' data-info="type">
+			<input type="text" class="input" data-request='{"type":"get","parent":"obj","param":["name"],"obj":"popup"}' data-info="name">
+			<input type="text" class="input" data-request='{"type":"get","parent":"obj","param":["login"],"obj":"popup"}' data-info="login">
+			<input type="text" class="input" data-request='{"type":"get","parent":"obj","param":["password"],"obj":"popup"}' data-info="password">
+			<input type="text" class="input" data-request='{"type":"get","parent":"obj","param":["company"],"obj":"popup"}' data-info="company">
+			<input type="text" class="input" data-request='{"type":"get","parent":"obj","param":["type"],"obj":"popup"}' data-info="type">
 			<select class="select" data-info="do">
 				<option value="rewrite">Переписать</option>
 				<option value="add">Добавить</option>
