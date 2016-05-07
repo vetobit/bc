@@ -21,29 +21,82 @@ var obj={
   },
   uploadScreen:function(hash){
     var screen = document.querySelector("#"+hash),
-        dom = screen.querySelectorAll("[data-request]"),
-        request = [];
+        dom = screen.querySelectorAll("[data-request]");
     for(var item in dom){
       item=dom[item];
       if(typeof(item)=="object"){
         if(item.tagName=="TABLE"){
           var ths=item.querySelectorAll("th"),
-              item=item.querySelector("tbody"),
               thsRequest=[];
           for(var th in ths){
             var thItem=ths[th];
             if(typeof(thItem)=="object"){
-              thsRequest.push(obj.whatdo(thItem.getAttribute("data-request")));
+              thsRequest.push(thItem.getAttribute("data-request"));
             }
           }
-          console.log(thsRequest);
+          if(Object.keys(obj[item.getAttribute("data-mainObj")])!="0"){
+            for(object in obj[item.getAttribute("data-mainObj")]){
+              object=obj[item.getAttribute("data-mainObj")][object];
+              for(deep in object){
+                deepObj=object[deep];
+                var tr = document.createElement("tr");
+                tr.setAttribute('onclick','obj.whatdo('+item.getAttribute("data-request")+');');
+                for(var num in thsRequest){
+                  var td=document.createElement("td"),
+                      deepKeys=Object.keys(deepObj),
+                      thRequest=JSON.parse(thsRequest[num]);
+                  thRequest.obj=item.querySelector("tbody").childElementCount;
+                  td.innerHTML=JSON.stringify(thRequest);
+                  tr.appendChild(td);
+                }
+                item.querySelector("tbody").appendChild(tr);
+              }
+            }
+          }
+          else{
+            obj[item.getAttribute("data-mainObj")].map(function(object){
+              var tr=document.createElement("tr");
+              tr.setAttribute('onclick','obj.whatdo('+item.getAttribute("data-request")+');');
+              for(var num in thsRequest){
+                var td=document.createElement("td"),
+                    objectKeys=Object.keys(object),
+                    thRequest=JSON.parse(thsRequest[num]); 
+                  thRequest.obj=item.querySelector("tbody").childElementCount;
+                  td.innerHTML=JSON.stringify(thRequest);
+                  tr.appendChild(td);
+              }
+              item.querySelector("tbody").appendChild(tr);
+            });
+          }
         }
-        request.push(obj.whatdo(item.getAttribute("data-request")));
+        else{
+          if(item.tagName!="TH"){
+            if(item.tagName!="SELECT" && item.tagName!="INPUT"){
+              item.innerHTML=item.getAttribute("data-request");
+            }
+            else{
+              if(item.tagName!="INPUT"){
+                var request = JSON.parse(item.getAttribute("data-request"));
+                request.parent=eval(request.parent);
+                request.param=eval(request.param);
+                for(var param in request.parent[request.obj]){
+                  param=request.parent[request.obj][param];
+                  var option = document.createElement("option");
+                  option.innerHTML=option.value=param[request.param];
+                  item.appendChild(option);
+                }
+              }
+              else{
+                item.value=JSON.stringify(JSON.parse(item.getAttribute("data-request")));
+              }
+            }
+          }
+        }
       }
     }
   },
   whatdo:function(request){
-    var request=JSON.parse(request);
+    var request=JSON.parse(request);     
     request.parent=eval(request.parent);
     return request;
   },
@@ -96,6 +149,7 @@ var obj={
         obj.users=JSON.parse(responseText);
         obj.checkFiles();                                             
       }else{
+        obj.users={};
         obj.checkFiles();
       }
     }                                                                                 
@@ -111,6 +165,7 @@ var obj={
         obj.outin=JSON.parse(responseText);
         obj.checkFiles();                                              
       }else{
+        obj.outin=[];
         obj.checkFiles();
       }
     }                                                                                 
@@ -126,6 +181,7 @@ var obj={
         obj.needs=JSON.parse(responseText); 
         obj.checkFiles();                                             
       }else{
+        obj.needs=[];
         obj.checkFiles();
       }
     }                                                                                 
