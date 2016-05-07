@@ -30,7 +30,7 @@
 		<div class="container">
 			<h2 class="description">Админ панель</h2>
 			<h3 class="description">Запросы</h3>
-			<table class="table requests" data-request='{"type":"get","parent":"obj.needs","param":"all","obj":"length"}' data-mainObj="needs" data-popup="#adminRequest">
+			<table class="table requests" data-request='{"type":"get","parent":"obj.needs","param":"all","obj":"length"}' data-mainObj="needs" data-popup="adminRequest">
 				<thead>
 					<th data-request='{"type":"get","parent":"obj.needs","param":["company"],"obj":"all"}' data-mainParam="company">Компания</th>
 					<th data-request='{"type":"get","parent":"obj.needs","param":["number"],"obj":"all"}' data-mainParam="number">Номер запроса</th>
@@ -44,8 +44,9 @@
 				</tbody>
 			</table>
 			<h3 class="description">Пользователи</h3>
-			<table class="table users" data-request='{"type":"get","parent":"obj.users","param":"all","obj":"length"}' data-mainObj="users" data-popup="#adminUser">
+			<table class="table users" data-request='{"type":"get","parent":"obj.users","param":"all","obj":"length"}' data-mainObj="users" data-popup="adminUser">
 				<thead>
+					<th data-request='{"type":"get","parent":"obj.users","param":["number"],"obj":"all"}' data-mainParam="number">Номер</th>
 					<th data-request='{"type":"get","parent":"obj.users","param":["name"],"obj":"all"}' data-mainParam="name">Имя</th>
 					<th data-request='{"type":"get","parent":"obj.users","param":["login"],"obj":"all"}' data-mainParam="login">Логин</th>
 					<th data-request='{"type":"get","parent":"obj.users","param":["password"],"obj":"all"}' data-mainParam="company">Пароль</th>
@@ -109,7 +110,7 @@
 	</div>
 	<div class="popup" id="adminUser">
 		<div class="container">
-			<h3 class="description" data-request='{type:"get",parent:"obj",param:["number"],obj:"popup"}' data-info="number" data-alternative="obj.users.length">Номер пользователя</h3>
+			<h3 class="description" data-request='{"type":"get","parent":"obj","param":["number"],"obj":"popup"}' data-info="number" data-alternative="obj.users.length">Номер пользователя</h3>
 			<input type="text" class="input" data-request='{"type":"get","parent":"obj","param":["name"],"obj":"popup"}' data-info="name">
 			<input type="text" class="input" data-request='{"type":"get","parent":"obj","param":["login"],"obj":"popup"}' data-info="login">
 			<input type="text" class="input" data-request='{"type":"get","parent":"obj","param":["password"],"obj":"popup"}' data-info="password">
