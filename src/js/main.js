@@ -36,17 +36,19 @@ var obj={
           }
           if(Object.keys(obj[item.getAttribute("data-mainObj")])!="0"){
             for(object in obj[item.getAttribute("data-mainObj")]){
-              object=obj[item.getAttribute("data-mainObj")][object];
-              for(deep in object){
-                deepObj=object[deep];
-                var tr = document.createElement("tr");
-                tr.setAttribute('onclick','obj.whatdo('+item.getAttribute("data-request")+');');
+              objectItem=obj[item.getAttribute("data-mainObj")][object];
+              for(deep in objectItem){
+                deepObj=objectItem[deep];
+                var tr = document.createElement("tr"),
+                    trRequest = item.getAttribute("data-request");
+                tr.setAttribute('onclick','obj.popup=JSON.parse(\''+JSON.stringify(deepObj)+'\'); obj.uploadScreen(\"'+item.getAttribute("data-popup")+'\"); window.location.hash=\"'+item.getAttribute("data-popup")+'\";');
                 for(var num in thsRequest){
                   var td=document.createElement("td"),
                       deepKeys=Object.keys(deepObj),
                       thRequest=JSON.parse(thsRequest[num]);
-                  thRequest.obj=item.querySelector("tbody").childElementCount;
-                  td.innerHTML=JSON.stringify(thRequest);
+                  thRequest.parent="obj."+item.getAttribute("data-mainObj")+"."+object;
+                  thRequest.obj=deep;
+                  td.innerHTML=obj.whatdo(JSON.stringify(thRequest));
                   tr.appendChild(td);
                 }
                 item.querySelector("tbody").appendChild(tr);
@@ -56,13 +58,14 @@ var obj={
           else{
             obj[item.getAttribute("data-mainObj")].map(function(object){
               var tr=document.createElement("tr");
-              tr.setAttribute('onclick','obj.whatdo('+item.getAttribute("data-request")+');');
+              tr.setAttribute('onclick','obj.popup=JSON.parse(\''+JSON.stringify(object)+'\'); obj.uploadScreen(\"'+item.getAttribute("data-popup")+'\"); window.location.hash=\"'+item.getAttribute("data-popup")+'\";');
+              //tr.setAttribute('onclick','obj.whatdo('+item.getAttribute("data-request")+');');
               for(var num in thsRequest){
                 var td=document.createElement("td"),
                     objectKeys=Object.keys(object),
                     thRequest=JSON.parse(thsRequest[num]); 
-                  thRequest.obj=item.querySelector("tbody").childElementCount;
-                  td.innerHTML=JSON.stringify(thRequest);
+                  thRequest.obj=item.querySelector("tbody").childElementCount; 
+                  td.innerHTML=obj.whatdo(JSON.stringify(thRequest));
                   tr.appendChild(td);
               }
               item.querySelector("tbody").appendChild(tr);
@@ -72,10 +75,11 @@ var obj={
         else{
           if(item.tagName!="TH"){
             if(item.tagName!="SELECT" && item.tagName!="INPUT"){
-              item.innerHTML=item.getAttribute("data-request");
+              item.innerHTML=obj.whatdo(item.getAttribute("data-request"));
             }
             else{
               if(item.tagName!="INPUT"){
+                item.innerHTML="";
                 var request = JSON.parse(item.getAttribute("data-request"));
                 request.parent=eval(request.parent);
                 request.param=eval(request.param);
@@ -87,7 +91,7 @@ var obj={
                 }
               }
               else{
-                item.value=JSON.stringify(JSON.parse(item.getAttribute("data-request")));
+                item.value=obj.whatdo(JSON.stringify(JSON.parse(item.getAttribute("data-request"))));
               }
             }
           }
@@ -98,7 +102,19 @@ var obj={
   whatdo:function(request){
     var request=JSON.parse(request);     
     request.parent=eval(request.parent);
-    return request;
+    
+    if(request.type=="get"){
+      return request.parent[request.obj][request.param[0]];
+    }
+    else{
+      if(request.type=="add"){
+        return request;
+      }
+      else{
+        return request;
+      }
+    }
+
   },
   authorization:function(responseText){                                            
     if(responseText!=false){                                                          
