@@ -1,5 +1,7 @@
 window.addEventListener("DOMContentLoaded",function(){
   window.location.hash="login";
+  obj.getUsers(true);
+  obj.getOutin(true);
 });
 var obj={
   user:{
@@ -8,10 +10,7 @@ var obj={
   init:function(authorization){
     if(authorization){
       if(obj.user.type!="people"){
-        obj.getUsers(true);
         obj.getNeeds(true);
-        obj.getOutin(true);
-        console.log("dqwdqwqwd");
       }else{
         console.log("Прошёл через турникет");   
       }
@@ -58,7 +57,6 @@ var obj={
             }
           }
           else{
-            console.log(item.getAttribute("data-mainObj"));
             obj[item.getAttribute("data-mainObj")].map(function(object){
               var tr=document.createElement("tr");
               tr.setAttribute('onclick','obj.popup=JSON.parse(\''+JSON.stringify(object)+'\'); obj.uploadScreen(\"'+item.getAttribute("data-popup")+'\"); window.location.hash=\"'+item.getAttribute("data-popup")+'\";');
@@ -102,7 +100,28 @@ var obj={
     }
   },
   whatdo:function(request){
-    request=JSON.parse(request); 
+    request=JSON.parse(request);
+    if(request.type!="get" && request.type!="add" && request.type!="rewrite"){
+      request.type=request.type.split(":")[1];
+      var linkObject = eval(request.link[0]);
+      var linkParam = linkObject.querySelectorAll("[data-info="+request.type+"]")[0].value;
+      request.type=linkParam;
+      if(request.parent=="obj.users"){
+        var dopParent=linkObject.querySelectorAll("[data-info=company]")[0].value;
+        if(dopParent=="bc"){
+          request.parent+=".bc";
+          var localNumber = "0";
+        }
+        else{
+          request.parent+=".other";
+          var localNumber = "1";
+        }
+      }
+    }
+    if(request.obj=="link:number"){
+        var linkObject = eval(request.link[0]);
+        request.obj=linkObject.querySelectorAll("[data-info="+request.obj.split(":")[1]+"]")[0].innerHTML;
+    } 
     if(request.type=="get"){    
       request.parent=eval(request.parent);
       return request.parent[request.obj][request.param[0]];
@@ -165,7 +184,7 @@ var obj={
           else{
             if(request.param.length!=values.length){
               var newParam=request.param;
-              values.map(function(localMap){
+              values.map(function(localMap){ 
                 newParam=newParam.join("").split(localMap);
               });
               newParam.map(function(param){
@@ -176,13 +195,114 @@ var obj={
             }
           }
         }
+        var copyParentText=request.parent;
         request.parent=eval(request.parent);
-        object.number=request.parent.length;
+        if(localNumber){
+          object.number=localNumber+"."+request.parent.length;  
+        }
+        else{
+          object.number=request.parent.length;
+        }
         request.parent.push(object);
+        // obj.uploadScreen(obj.user.type);
+        window.location.hash=obj.user.type;
         obj.uploadScreen(obj.user.type);
+        console.log(copyParentText);
+        if(copyParentText=="obj.needs"){
+            obj.rewriteFile(obj.needs,"json/need.json");
+        }
+        else{ 
+          if(copyParentText=="obj.users.bc"){
+            obj.rewriteFile(obj.users,"json/users.json");
+          }
+          if(copyParentText=="obj.users.other"){
+            obj.rewriteFile(obj.users,"json/users.json");
+          }
+        }
       }
       else{
-        return request;
+        if(request.type=="rewrite"){
+          var dom = document.querySelector(window.location.hash),
+              domParams = dom.querySelectorAll("[data-info]"),
+              object = {};
+          for(domParam in domParams){
+            domParam = domParams[domParam];
+            if(typeof(domParam)=="object"){
+              if(domParam.tagName!="SELECT" && domParam.tagName!="INPUT"){
+                if(domParam.getAttribute("data-value")){
+                  object[domParam.getAttribute("data-info")]=domParam.getAttribute("data-value");
+                }
+                else{
+                  object[domParam.getAttribute("data-info")]=domParam.innerHTML;
+                }
+                
+              }
+              else{
+                object[domParam.getAttribute("data-info")]=domParam.value;
+              }
+            }
+          }
+          var copyParentText=request.parent;
+          if(request.parent=="obj.needs"){
+            request.parent=eval(request.parent);
+            delete(object.do);    
+            for(var item in request.parent[request.obj]){
+              itemObj=request.parent[request.obj][item];
+              for(objectItem in object){
+                if(item == objectItem){
+                  request.parent[request.obj][item]=object[objectItem];
+                }
+              }
+            }
+          }
+          else{
+            request.parent=eval(request.parent);
+            delete(object.do);
+            request.parent[request.obj.split(".")[1]]=object;  
+          }
+          if(copyParentText=="obj.needs"){
+            obj.rewriteFile(obj.needs,"json/need.json");
+          }
+          else{ 
+            if(copyParentText=="obj.users.bc"){
+              obj.rewriteFile(obj.users,"json/users.json");
+            }
+            if(copyParentText=="obj.users.other"){
+              obj.rewriteFile(obj.users,"json/users.json");
+            }
+          }
+          window.location.hash=obj.user.type;
+          obj.uploadScreen(obj.user.type);
+        }
+        else{
+          if(request.type=="delete"){
+            var parent=eval(request.parent);
+            //delete(parent[request.obj.split(".")[1]]);
+            for(var parentKey in parent){
+              var parentItem = parent[parentKey];
+              for(parentItemKey in parentItem){
+                parentItemItem = parentItem[parentItemKey];
+                if(parentItemItem == request.obj){
+                  parent.splice(parentKey,parentKey);
+                }
+              }
+            }
+            //console.log(parent);
+            window.location.hash=obj.user.type;
+            obj.uploadScreen(obj.user.type);
+            if(request.parent=="obj.needs"){
+              obj.rewriteFile(obj.needs,"json/need.json");
+            }
+            else{
+              if(request.parent=="obj.users.bc"){
+                obj.rewriteFile(obj.users,"json/users.json");
+              }
+              if(request.parent=="obj.users.other"){
+                obj.rewriteFile(obj.users,"json/users.json");
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -229,11 +349,16 @@ var obj={
     };
     xhr.send(null);                                                                   
   },
+  rewriteFile:function(obj,url){
+    var fs = require('fs');
+    fs.writeFileSync(url,JSON.stringify(obj),'utf8');
+  },
   getUsers:function(responseText){                                                    
     if(responseText!=true){                                                          
       if(responseText!=false){
         obj.users=JSON.parse(responseText);
-        obj.checkFiles();                                             
+        obj.checkFiles();
+        obj.uploadScreen("login");                                             
       }else{
         obj.users={};
         obj.checkFiles();
@@ -287,6 +412,24 @@ var obj={
       }
     }else{
       obj.run=1;
+    }
+  },
+  addToOutin:function(item){
+    var object=item.getAttribute("data-object"),
+        param = item.getAttribute("data-param"),
+        doing = item.getAttribute("data-doing");
+        newObj={};
+    for(var user in obj.users[object]){
+      user=obj.users[object][user];
+      if(user.name==param){
+        newObj.user=param;
+        newObj.company=user.company;
+        newObj.date=new Date();
+        newObj.doing=doing;
+        obj.outin.push(newObj);
+        obj.rewriteFile(obj.outin,"json/outin.json");
+        return 0;
+      }
     }
   }
 };
