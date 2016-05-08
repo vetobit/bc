@@ -82,7 +82,7 @@
 					<option value="Ремонт">Ремонт</option>
 					<option value="Уборка">Уборка</option>
 				</select>
-				<input type="button" class="button" value="Отправить" onclick='obj.whatdo({"type":"add","parent":"obj.needs","param":["text","type","company","status"],link:[this.parentNode,"obj.user"]})'>
+				<input type="button" class="button" value="Отправить" onclick='obj.whatdo("{\"type\":\"add\",\"parent\":\"obj.needs\",\"param\":[\"text\",\"type\",\"company\",\"status\"],\"link\":[\""+this.parentNode.id+"\",\"obj.user\"]}")'>
 			</div>
 			<h2 class="description">Запросы</h2>
 			<table class="table requests" data-request="null" data-mainObj="needs">
