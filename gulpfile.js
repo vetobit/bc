@@ -76,7 +76,8 @@ gulp.task('watch', function() {
 	gulp.watch(path.from.less, ['less']);
 	gulp.watch(path.from.json, ['json']);
 	gulp.watch(path.from.html, ['html']);
+	gulp.watch(path.nw_config, ['nwjs']);
 });
 gulp.task('default',['clean'],function(){
-	gulp.run(['js','less','json','html','copy','nwjs','watch']);
+	gulp.run(['js','less','json','html','copy','nwjs']);
 });
