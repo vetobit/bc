@@ -6,7 +6,8 @@
       "name":"Виталий",
       "company":"bc",
       "number":"0.0",
-      "type":"admin"  
+      "type":"admin",
+      "office":"11"  
     },
     {
       "login":"cleaner",
@@ -14,7 +15,8 @@
       "name":"Гарина",
       "company":"bc",
       "number":"0.1",
-      "type":"people"
+      "type":"people",
+      "office":"11" 
     },
     {
       "login":"sisadmin",
@@ -22,7 +24,8 @@
       "name":"Иван",
       "company":"bc",
       "number":"0.2",
-      "type":"people"
+      "type":"people",
+      "office":"11" 
     }
   ],
   "other":[
@@ -32,7 +35,17 @@
       "name":"Цветы онлайн",
       "company":"flowers online",
       "number":"1.0",
-      "type":"company"
+      "type":"company",
+      "office":"110" 
+    },
+    {
+      "login":"company2",
+      "password":"1",
+      "name":"Цветы не онлайн",
+      "company":"flowers not online",
+      "number":"1.1",
+      "type":"company",
+      "office":"111" 
     }
   ]
 }
