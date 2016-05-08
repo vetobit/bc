@@ -11,6 +11,7 @@ var obj={
         obj.getUsers(true);
         obj.getNeeds(true);
         obj.getOutin(true);
+        console.log("dqwdqwqwd");
       }else{
         console.log("Прошёл через турникет");   
       }
@@ -21,31 +22,32 @@ var obj={
   },
   uploadScreen:function(hash){
     var screen = document.querySelector("#"+hash),
-        dom = screen.querySelectorAll("[data-request]");
+    dom = screen.querySelectorAll("[data-request]");
     for(var item in dom){
       item=dom[item];
       if(typeof(item)=="object"){
         if(item.tagName=="TABLE"){
+          item.querySelector("tbody").innerHTML="";
           var ths=item.querySelectorAll("th"),
-              thsRequest=[];
+          thsRequest=[];
           for(var th in ths){
             var thItem=ths[th];
             if(typeof(thItem)=="object"){
               thsRequest.push(thItem.getAttribute("data-request"));
             }
           }
-          if(Object.keys(obj[item.getAttribute("data-mainObj")])!="0"){
+          if(!(obj[item.getAttribute("data-mainObj")] instanceof Array)){
             for(object in obj[item.getAttribute("data-mainObj")]){
               objectItem=obj[item.getAttribute("data-mainObj")][object];
               for(deep in objectItem){
                 deepObj=objectItem[deep];
                 var tr = document.createElement("tr"),
-                    trRequest = item.getAttribute("data-request");
+                trRequest = item.getAttribute("data-request");
                 tr.setAttribute('onclick','obj.popup=JSON.parse(\''+JSON.stringify(deepObj)+'\'); obj.uploadScreen(\"'+item.getAttribute("data-popup")+'\"); window.location.hash=\"'+item.getAttribute("data-popup")+'\";');
                 for(var num in thsRequest){
                   var td=document.createElement("td"),
-                      deepKeys=Object.keys(deepObj),
-                      thRequest=JSON.parse(thsRequest[num]);
+                  deepKeys=Object.keys(deepObj),
+                  thRequest=JSON.parse(thsRequest[num]);
                   thRequest.parent="obj."+item.getAttribute("data-mainObj")+"."+object;
                   thRequest.obj=deep;
                   td.innerHTML=obj.whatdo(JSON.stringify(thRequest));
@@ -56,17 +58,17 @@ var obj={
             }
           }
           else{
+            console.log(item.getAttribute("data-mainObj"));
             obj[item.getAttribute("data-mainObj")].map(function(object){
               var tr=document.createElement("tr");
               tr.setAttribute('onclick','obj.popup=JSON.parse(\''+JSON.stringify(object)+'\'); obj.uploadScreen(\"'+item.getAttribute("data-popup")+'\"); window.location.hash=\"'+item.getAttribute("data-popup")+'\";');
-              //tr.setAttribute('onclick','obj.whatdo('+item.getAttribute("data-request")+');');
               for(var num in thsRequest){
                 var td=document.createElement("td"),
-                    objectKeys=Object.keys(object),
-                    thRequest=JSON.parse(thsRequest[num]); 
-                  thRequest.obj=item.querySelector("tbody").childElementCount; 
-                  td.innerHTML=obj.whatdo(JSON.stringify(thRequest));
-                  tr.appendChild(td);
+                objectKeys=Object.keys(object),
+                thRequest=JSON.parse(thsRequest[num]); 
+                thRequest.obj=item.querySelector("tbody").childElementCount; 
+                td.innerHTML=obj.whatdo(JSON.stringify(thRequest));
+                tr.appendChild(td);
               }
               item.querySelector("tbody").appendChild(tr);
             });
@@ -100,21 +102,89 @@ var obj={
     }
   },
   whatdo:function(request){
-    var request=JSON.parse(request);     
-    request.parent=eval(request.parent);
-    
-    if(request.type=="get"){
+    request=JSON.parse(request); 
+    if(request.type=="get"){    
+      request.parent=eval(request.parent);
       return request.parent[request.obj][request.param[0]];
     }
     else{
       if(request.type=="add"){
-        return request;
+        var screen = document.querySelector(window.location.hash),
+        newObject = {links:[]};
+        for(var link in request.link){
+          link=request.link[link]=eval(request.link[link]);
+          if(link.tagName){
+            var elements=link.querySelectorAll("[data-info]"),
+            values=[],
+            object={};
+            if(link.getAttribute("data-info")){
+              values.push(link.getAttribute("data-info"));
+              if(!link.value){
+                if(!link.getAttribute("data-value")){
+                  if(!link.innerHTML){
+                    object[values[values.length-1]]="Не нашёлся параметр";
+                  }
+                  else{
+                    object[values[values.length-1]]=link.innerHTML;
+                  }
+                }
+                else{
+                  object[values[values.length-1]]=link.getAttribute("data-value");
+                }
+              }
+              else{
+                object[values[values.length-1]]=link.value;
+              }
+            }
+            if(elements){
+              for(element in elements){
+                if(typeof(elements[element])=="object"){
+                  values.push(elements[element].getAttribute("data-info"));
+                  element=elements[element];
+
+                  if(!element.value){
+                    if(!element.getAttribute("data-value")){
+                      if(!element.innerHTML){
+                        object[values[values.length-1]]="Не нашёлся параметр";
+                      }
+                      else{
+                        object[values[values.length-1]]=element.innerHTML;
+                      }
+                    }
+                    else{
+                      object[values[values.length-1]]=element.getAttribute("data-value");
+                    }
+                  }
+                  else{
+                    object[values[values.length-1]]=element.value;
+                  }
+                }
+              }
+            }
+          }
+          else{
+            if(request.param.length!=values.length){
+              var newParam=request.param;
+              values.map(function(localMap){
+                newParam=newParam.join("").split(localMap);
+              });
+              newParam.map(function(param){
+                if(param!=""){
+                  object[param]=link[param];
+                }
+              });
+            }
+          }
+        }
+        request.parent=eval(request.parent);
+        object.number=request.parent.length;
+        request.parent.push(object);
+        obj.uploadScreen(obj.user.type);
       }
       else{
         return request;
       }
     }
-
   },
   authorization:function(responseText){                                            
     if(responseText!=false){                                                          
@@ -213,6 +283,7 @@ var obj={
       if(obj.run==3){
         obj.uploadScreen(obj.user.type);
         window.location.hash=obj.user.type;
+        obj.run=0;
       }
     }else{
       obj.run=1;
