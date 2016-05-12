@@ -1,13 +1,13 @@
-window.addEventListener("DOMContentLoaded",function(){
+window.addEventListener("DOMContentLoaded",function(){                                  // Вызов функции при загрузке страницы
   window.location.hash="login";
   obj.getUsers(true);
   obj.getOutin(true);
 });
-var obj={
+var obj={                                                                              // Объявляется основной объект программы
   user:{
 
   },
-  init:function(authorization){
+  init:function(authorization){                                                        // Первая функция которая запускает процесс авторизации и подружает json с сервера 
     if(authorization){
       if(obj.user.type!="people"){
         obj.getNeeds(true);
@@ -19,7 +19,7 @@ var obj={
       console.log("не авторизован");
     }
   },
-  uploadScreen:function(hash){
+  uploadScreen:function(hash){                                                        // Функиця обновления данных на странице по её hash в url, ориентируется по типу тега и его рапросу в атрибутах
     var screen = document.querySelector("#"+hash),
     dom = screen.querySelectorAll("[data-request]");
     for(var item in dom){
@@ -99,7 +99,7 @@ var obj={
       }
     }
   },
-  whatdo:function(request){
+  whatdo:function(request){                                                                               // функция отвечающая за запись в объекты программы, их перезапись и удаление                           
     request=JSON.parse(request);
     if(request.type!="get" && request.type!="add" && request.type!="rewrite"){
       request.type=request.type.split(":")[1];
@@ -277,7 +277,6 @@ var obj={
         else{
           if(request.type=="delete"){
             var parent=eval(request.parent);
-            //delete(parent[request.obj.split(".")[1]]);
             for(var parentKey in parent){
               var parentItem = parent[parentKey];
               for(parentItemKey in parentItem){
@@ -287,7 +286,6 @@ var obj={
                 }
               }
             }
-            //console.log(parent);
             window.location.hash=obj.user.type;
             obj.uploadScreen(obj.user.type);
             if(request.parent=="obj.needs"){
@@ -306,7 +304,7 @@ var obj={
       }
     }
   },
-  authorization:function(responseText){                                            
+  authorization:function(responseText){                                                 // Функция авторизации - сравнивает данные пользователя с файлом на сервере                                       
     if(responseText!=false){                                                          
       var users = JSON.parse(responseText),                                           
           flag = false;
@@ -339,7 +337,7 @@ var obj={
       });
     }
   },
-  getFile:function(url,func){                                                         
+  getFile:function(url,func){                                                                 // Функция отвечающая за чтение записей из json с сервера                               
     var xhr=new XMLHttpRequest();                                                     
     xhr.open("GET", url, true);                                                       
     xhr.onreadystatechange=function(){                                                
@@ -348,12 +346,12 @@ var obj={
       }                                                     
     };
     xhr.send(null);                                                                   
-  },
-  rewriteFile:function(obj,url){
+  }, 
+  rewriteFile:function(obj,url){                                                             // Функция которая перезаписывает файл на сервере
     var fs = require('fs');
     fs.writeFileSync(url,JSON.stringify(obj),'utf8');
   },
-  getUsers:function(responseText){                                                    
+  getUsers:function(responseText){                                                           // Функия которая формирует объект c пользователями                                        
     if(responseText!=true){                                                          
       if(responseText!=false){
         obj.users=JSON.parse(responseText);
@@ -370,9 +368,9 @@ var obj={
       });
     }
   },
-  getOutin:function(responseText){                                                    
-    if(responseText!=true){                                                          
-      if(responseText!=false){
+  getOutin:function(responseText){                                                                              
+    if(responseText!=true){                                                                    // Функия которая формирует объект с информацией турникета
+      if(responseText!=false){  
         obj.outin=JSON.parse(responseText);
         obj.checkFiles();                                              
       }else{
@@ -386,8 +384,8 @@ var obj={
       });
     }
   },
-  getNeeds:function(responseText){                                                    
-    if(responseText!=true){                                                          
+  getNeeds:function(responseText){                                                             // Функция которая формирует объект с запросами компаний             
+    if(responseText!=true){                                                                        
       if(responseText!=false){
         obj.needs=JSON.parse(responseText); 
         obj.checkFiles();                                             
@@ -402,7 +400,7 @@ var obj={
       });
     }
   },
-  checkFiles:function(){
+  checkFiles:function(){                                                                     // Функция которая запускает обновление экрана после успешной загрузки всех объектов.
     if(obj.run){
       obj.run++;
       if(obj.run==3){
@@ -414,7 +412,7 @@ var obj={
       obj.run=1;
     }
   },
-  addToOutin:function(item){
+  addToOutin:function(item){                                                                // Функция записи в турникет 
     var object=item.getAttribute("data-object"),
         param = item.getAttribute("data-param"),
         doing = item.getAttribute("data-doing");
